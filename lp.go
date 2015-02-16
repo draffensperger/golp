@@ -1,12 +1,26 @@
 // NOTE: This code starts column index at 0, converts to starting at 1 for lpsolve library
 
-package lp
+package golp
 
 /*
 #cgo CFLAGS: -I./lib/lp_solve
 #cgo LDFLAGS: -L./lib/lp_solve/ -llpsolve55 -Wl,-rpath=./lib/lp_solve
 #include <stdlib.h>
 #include "lp_lib.h"
+#include "stringbuilder.h"
+
+int write_lp_to_str_callback(void* userhandle, char* buf) {
+	sb_append_str((stringbuilder*) userhandle, buf);
+	return 0;
+}
+
+char* write_lp_to_str(lprec *lp) {
+	stringbuilder* sb = sb_new();
+	write_lpex(lp, sb, write_lp_to_str_callback);
+	char* str = sb_cstring(sb);
+	sb_destroy(sb, 0);
+	return str;
+}
 */
 import "C"
 
@@ -114,6 +128,13 @@ func (l lp) Solve() error {
 
 func (l lp) WriteToStdout() {
 	C.write_LP(l.ptr, C.stdout)
+}
+
+func (l lp) WriteToString() string {
+	cstr := C.write_lp_to_str(l.ptr)
+	str := C.GoString(cstr)
+	C.free(unsafe.Pointer(cstr))
+	return str
 }
 
 func (l lp) GetObjective() float64 {
