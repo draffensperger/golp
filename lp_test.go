@@ -14,8 +14,8 @@ func TestLP(t *testing.T) {
 	assert.Equal(t, "y", lp.GetColName(1))
 
 	lp.AddConstraint([]float64{120.0, 210.0}, LE, 15000)
-	lp.AddConstraintSparse([]Entry{Entry{col: 0, val: 110.0}, Entry{col: 1, val: 30.0}}, LE, 4000)
-	lp.AddConstraintSparse([]Entry{Entry{col: 1, val: 1.0}, Entry{col: 0, val: 1.0}}, LE, 75)
+	lp.AddConstraintSparse([]Entry{Entry{Col: 0, Val: 110.0}, Entry{Col: 1, Val: 30.0}}, LE, 4000)
+	lp.AddConstraintSparse([]Entry{Entry{Col: 1, Val: 1.0}, Entry{Col: 0, Val: 1.0}}, LE, 75)
 
 	lp.SetObjFn([]float64{143, 60}, true)
 
