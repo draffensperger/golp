@@ -29,12 +29,12 @@ import (
 	"unsafe"
 )
 
-type lp struct {
+type LP struct {
 	ptr *C.lprec
 }
 
-func NewLP(rows, cols int) *lp {
-	l := new(lp)
+func NewLP(rows, cols int) *LP {
+	l := new(LP)
 	l.ptr = C.make_lp(C.int(rows), C.int(cols))
 	runtime.SetFinalizer(l, deleteLP)
 	l.SetAddRowMode(true)
@@ -51,25 +51,25 @@ const ( // iota is reset to 0
 	FULL
 )
 
-func (l lp) SetVerboseLevel(level int) {
+func (l *LP) SetVerboseLevel(level int) {
 	C.set_verbose(l.ptr, C.int(level))
 }
 
-func deleteLP(l *lp) {
+func deleteLP(l *LP) {
 	C.delete_lp(l.ptr)
 }
 
-func (l lp) SetColName(col int, name string) {
+func (l *LP) SetColName(col int, name string) {
 	cstrName := C.CString(name)
 	C.set_col_name(l.ptr, C.int(col+1), cstrName)
 	C.free(unsafe.Pointer(cstrName))
 }
 
-func (l lp) GetColName(col int) string {
+func (l *LP) GetColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
 }
 
-func (l lp) SetAddRowMode(addRowMode bool) {
+func (l *LP) SetAddRowMode(addRowMode bool) {
 	C.set_add_rowmode(l.ptr, boolToUChar(addRowMode))
 }
 
@@ -85,11 +85,11 @@ type ConstraintType int
 const ( // iota is reset to 0
 	_  = iota // don't use 0
 	LE        // LE == 1
-	EQ        // EQ == 2
-	GE        // GE == 3
+	GE        // GE == 2
+	EQ        // EQ == 3
 )
 
-func (l lp) AddConstraint(row []float64, ct ConstraintType, rightHand float64) error {
+func (l *LP) AddConstraint(row []float64, ct ConstraintType, rightHand float64) error {
 	cRow := make([]C.double, len(row)+1)
 	cRow[0] = 0.0
 	for i := 0; i < len(row); i++ {
@@ -104,7 +104,7 @@ type Entry struct {
 	Val float64
 }
 
-func (l lp) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float64) error {
+func (l *LP) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float64) error {
 	cRow := make([]C.double, len(row))
 	cColNums := make([]C.int, len(row))
 	for i, entry := range row {
@@ -115,7 +115,7 @@ func (l lp) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float6
 	return nil
 }
 
-func (l lp) SetObjFn(row []float64, maximize bool) {
+func (l *LP) SetObjFn(row []float64, maximize bool) {
 	l.SetAddRowMode(false)
 
 	cRow := make([]C.double, len(row)+1)
@@ -148,27 +148,26 @@ const ( // iota is reset to 0
 	NOFEASFOUND
 )
 
-func (l lp) Solve() SolutionType {
+func (l *LP) Solve() SolutionType {
 	return SolutionType(C.solve(l.ptr))
 }
 
-func (l lp) WriteToStdout() {
+func (l *LP) WriteToStdout() {
 	C.write_LP(l.ptr, C.stdout)
 }
 
-func (l lp) WriteToString() string {
+func (l *LP) WriteToString() string {
 	cstr := C.write_lp_to_str(l.ptr)
 	str := C.GoString(cstr)
 	C.free(unsafe.Pointer(cstr))
 	return str
 }
 
-func (l lp) GetObjective() float64 {
-
+func (l *LP) GetObjective() float64 {
 	return float64(C.get_objective(l.ptr))
 }
 
-func (l lp) GetVariables() []float64 {
+func (l *LP) GetVariables() []float64 {
 	numCols := int(C.get_Ncolumns(l.ptr))
 	cRow := make([]C.double, numCols)
 	C.get_variables(l.ptr, &cRow[0])
