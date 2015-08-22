@@ -43,12 +43,12 @@ import (
 	"unsafe"
 )
 
-// Linear (or mixed integer) programming problem struct
+// LP stores a linear (or mixed integer) programming problem
 type LP struct {
 	ptr *C.lprec
 }
 
-// Create a new linear program structure with specified number of rows and 
+// NewLP create a new linear program structure with specified number of rows and 
 // columns. The underlying C data structure's memory will be freed in a Go
 // finalizer, so there is no need to explicitly deallocate it.
 func NewLP(rows, cols int) *LP {
@@ -74,32 +74,31 @@ const ( // iota is reset to 0
 	FULL
 )
 
-// Set verbose level
+// SetVerboseLevel changes the output verbose level
 // See http://lpsolve.sourceforge.net/5.1/set_verbose.htm
 func (l *LP) SetVerboseLevel(level int) {
 	C.set_verbose(l.ptr, C.int(level))
 }
 
-// Set column name. Unlike the LPSolve C library, col is zero-based
+// SetColName changes a column name. Unlike the LPSolve C library, col is zero-based
 func (l *LP) SetColName(col int, name string) {
 	cstrName := C.CString(name)
 	C.set_col_name(l.ptr, C.int(col+1), cstrName)
 	C.free(unsafe.Pointer(cstrName))
 }
 
-// Get column name, index is zero-based.
+// GetColName gives a column name, index is zero-based.
 func (l *LP) GetColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
 }
 
-// Specifies whether adding by row (true) or by column (false) performs best.
-// By default NewLP sets this for adding by row to perform best.
+// SetAddRowMode specifies whether adding by row (true) or by column (false) 
+// performs best. By default NewLP sets this for adding by row to perform best.
 // See http://lpsolve.sourceforge.net/5.5/set_add_rowmode.htm
 func (l *LP) SetAddRowMode(addRowMode bool) {
 	C.set_add_rowmode(l.ptr, boolToUChar(addRowMode))
 }
 
-//
 func boolToUChar(b bool) C.uchar {
 	if b {
 		return C.uchar(1)
@@ -107,7 +106,7 @@ func boolToUChar(b bool) C.uchar {
 	return C.uchar(0)
 }
 
-// Less than (golp.LE), greater than (golp.GE) or equal (golp.EQ)
+// ConstraintType can be less than (golp.LE), greater than (golp.GE) or equal (golp.EQ)
 type ConstraintType int
 
 // Contraint type constants
@@ -118,9 +117,9 @@ const ( // iota is reset to 0
 	EQ        // EQ == 3
 )
 
-// Adds a constraint to the linear program. This (unlike the LPSolve C
-// function), exects the data in the row param to start at index 0 for the first
-// column.
+// AddConstraint adds a constraint to the linear program. This (unlike the 
+// LPSolve C function), exects the data in the row param to start at index 0 
+// for the first column.
 // See http://lpsolve.sourceforge.net/5.5/add_constraint.htm  
 func (l *LP) AddConstraint(row []float64, ct ConstraintType, rightHand float64) error {
 	cRow := make([]C.double, len(row)+1)
@@ -132,14 +131,14 @@ func (l *LP) AddConstraint(row []float64, ct ConstraintType, rightHand float64) 
 	return nil
 }
 
-// Entry for sparse constraint or objective function rows
+// Entry is for sparse constraint or objective function rows
 type Entry struct {
 	Col int
 	Val float64
 }
 
-// Add a constraint row by specifying only the non-zero entries. Entries column
-// indices are zero-based.
+// AddConstraintSparse adds a constraint row by specifying only the non-zero 
+// entries. Entries column indices are zero-based.
 // See http://lpsolve.sourceforge.net/5.5/add_constraint.htm
 func (l *LP) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float64) error {
 	cRow := make([]C.double, len(row))
@@ -152,8 +151,8 @@ func (l *LP) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float
 	return nil
 }
 
-// Sets the objective function and whether to maximize it or minimize it.
-// Row indices are zero-based.
+// SetObjFn changes the objective function and whether to maximize it or 
+// minimize it. Row indices are zero-based.
 // See http://lpsolve.sourceforge.net/5.5/set_obj_fn.htm
 // and http://lpsolve.sourceforge.net/5.5/set_maxim.htm
 func (l *LP) SetObjFn(row []float64, maximize bool) {
@@ -171,7 +170,7 @@ func (l *LP) SetObjFn(row []float64, maximize bool) {
 	}
 }
 
-// Solution result type
+// SolutionType represents the result type
 type SolutionType int
 
 // Constacts for the solution result type
@@ -198,13 +197,13 @@ func (l *LP) Solve() SolutionType {
 	return SolutionType(C.solve(l.ptr))
 }
 
-// Writes a representation of the linear program to standard out
+// WriteToStdout writes a representation of the linear program to standard out
 // See http://lpsolve.sourceforge.net/5.5/write_lp.htm
 func (l *LP) WriteToStdout() {
 	C.write_LP(l.ptr, C.stdout)
 }
 
-// Writes a representation of the linear program to a string
+// WriteToString returns a representation of the linear program as a string
 func (l *LP) WriteToString() string {
 	cstr := C.write_lp_to_str(l.ptr)
 	str := C.GoString(cstr)
@@ -212,13 +211,14 @@ func (l *LP) WriteToString() string {
 	return str
 }
 
-// Gets the value of the objective for the linear program
+// GetObjective gives the value of the objective function of the solved linear
+// program.
 // See http://lpsolve.sourceforge.net/5.5/get_objective.htm
 func (l *LP) GetObjective() float64 {
 	return float64(C.get_objective(l.ptr))
 }
 
-// Gets the values for the variables of the solved linear program
+// GetVariables return the values for the variables of the solved linear program
 // See http://lpsolve.sourceforge.net/5.5/get_variables.htm
 func (l *LP) GetVariables() []float64 {
 	numCols := int(C.get_Ncolumns(l.ptr))
