@@ -1,16 +1,19 @@
-// Go bindings for LPSolve, a Mixed Integer Linear Programming (MILP) solver
-//
-// For usage examples, see https://github.com/draffensperger/golp#examples.
-//
-// Not all LPSolve functions have bindings. Feel free to open an issue or
-// contact me if you would like more added.
-//
-// The Go code of golp is MIT licensed, but LPSolve itself is licensed under the
-// LGPL. This roughly means that you can include golp in a closed-source project 
-// as long as you do not modify LPSolve itself and you use dynamic linking to
-// access LPSolve (and provide a way for someone to link your program to a
-// different version of LPSolve). 
-// For the legal details: http://lpsolve.sourceforge.net/5.0/LGPL.htm
+/*
+Package golp gives Go bindings for LPSolve, a Mixed Integer Linear 
+Programming (MILP) solver.
+
+For usage examples, see https://github.com/draffensperger/golp#examples.
+
+Not all LPSolve functions have bindings. Feel free to open an issue or
+contact me if you would like more added.
+
+The Go code of golp is MIT licensed, but LPSolve itself is licensed under the
+LGPL. This roughly means that you can include golp in a closed-source project 
+as long as you do not modify LPSolve itself and you use dynamic linking to
+access LPSolve (and provide a way for someone to link your program to a
+different version of LPSolve). 
+For the legal details: http://lpsolve.sourceforge.net/5.0/LGPL.htm
+*/
 package golp
 
 /*
