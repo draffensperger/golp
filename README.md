@@ -4,7 +4,16 @@ Golp is a Golang wrapper for the [LPSolve](http://lpsolve.sourceforge.net/5.5/) 
 
 ## Installation
 
+Here's how to install it.
 
+go get https://github.com/draffensperger/golp
+
+
+Then get LP solve itself. Golp is configured to dynamically link to LP solve,
+and it expects the 
+and for instance if you are on 64-bit Linux, 
+
+http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/
 
 ## Usage 
 
