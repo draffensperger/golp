@@ -4,28 +4,40 @@ Golp is a Golang wrapper for the [LPSolve](http://lpsolve.sourceforge.net/5.5/) 
 
 ## Installation
 
-Here's how to install it.
+To use golp, first you need to get the golp Go code:
 
+```
 go get https://github.com/draffensperger/golp
+```
 
+Then you will need to get LP solve itself. Golp is configured to dynamically
+link to LP solve and expects its files to be in the `lib/lp_solve` folder for
+your project. 
 
-Then get LP solve itself. Golp is configured to dynamically link to LP solve,
-and it expects the 
-and for instance if you are on 64-bit Linux, 
+You will need an LP Solve build suitable for your operating system, which you
+can [download from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
 
-http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/
+Here's how you could download and extract the LP Solve library for 64-bit Linux:
+
+```
+wget -qO- http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz | tar xvz -C lib/lp_solve
+```
+
+With some configuration changes, it would be possible to statically link to LP
+Solve but that may have licensing implications for your project since LP Solve
+is LGPL licensed.
 
 ## Usage 
 
-Not all LPSolve functions are supported, but it's currently possible to run a simple linear program using golp. See `lp_test.go` for an example. Note that the column indices are always zero based.
+Not all LPSolve functions are supported, but it's currently possible to run a 
+simple linear program using golp. See `lp_test.go` for an example. Note that 
+the column indices are always zero based.
 
 ### Example with real-valued variables
 
 ### MIP (Mixed Integer Programming) example
 
 ## Linking to LPSolve
-
-You will need to copy `liblpsolve55.so` to the `./lib/lp_solve` folder in the directory where your final executable will be. The shared library included in this repo is for 64 bit Linux. You would need to get an appropriate library file for other systems from the LPSolve site. LPSolve source and binaries are at the [LPSolve SourceForge page](http://sourceforge.net/projects/lpsolve/). Static linking should be possible with a tweak to the cgo settings.
 
 ## Alternative Linear Programming Packages
 
