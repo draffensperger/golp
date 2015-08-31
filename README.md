@@ -12,12 +12,12 @@ go get github.com/draffensperger/golp
 
 **Step 2: Get the LPSolve library**
 
-Golp is configured to dynamically link to LP solve and expects its files to be 
-in the `lib/lp_solve` folder for your project.  You will need an LP Solve build 
-suitable for your operating  system, which you can 
+Golp is configured to dynamically link to LPSolve and expects its files to be 
+in the `lib/lp_solve` folder for your project.  You will need an LPSolve library 
+suitable for your operating system, which you can 
 [get from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
 
-Here's how you could download and extract the LP Solve library for 64-bit Linux:
+Here's how you could download and extract the LPSolve library for 64-bit Linux:
 
 ```
 LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
@@ -25,15 +25,16 @@ mkdir -p lib/lp_solve
 wget -qO- $LP_URL | tar xvz -C lib/lp_solve
 ```
 
-With some configuration changes, it would be possible to statically link to LP
-Solve but that may have licensing implications for your project since LP Solve
-is LGPL licensed.
+With some configuration changes, it would be possible to statically link to 
+LPSolve but that may have licensing/distribution implications for your project 
+since LP Solve is [LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm). 
 
 ## Usage 
 
 Not all LPSolve functions are supported, but it's currently possible to run a 
 simple linear and integer program using golp. Note that unlike the LP Solve C
-library, the column indices are always zero based.
+library, the column indices are always zero based. Feel free to open a GitHub
+issue or pull request if you'd like more functions added.
 
 ### Example with real-valued variables
 
@@ -74,7 +75,8 @@ For optimal profit of $6315.62
 ### MIP (Mixed Integer Programming) example
 
 LPSolve also supports setting variables to be integral or binary and uses the
-branch-and-bound algorithm for such problems.
+branch-and-bound algorithm for such problems. This example is from the
+[LPSolve integer variables documentation](http://lpsolve.sourceforge.net/5.5/integer.htm).
 
 
 ```
@@ -111,11 +113,46 @@ x3 = 2
 x4 = 0
 ```
 
-## Alternative Linear Programming Packages
+## Alternative linear programming libraries
 
+There are also Go bindings for the GPL-licensed
+[GNU Linear Programming Kit (GLPK)](http://www.gnu.org/software/glpk/) at
+[github.com/lukpank/go-glpk](https://github.com/lukpank/go-glpk).
 
+The Google [or-tools](https://github.com/google/or-tools) project provides a C++
+SWIG compatible inteface for a number of other linear and mixed integer solvers
+like CBC, CLP, GLOP, Gurobi, CPLEX, SCIP, and Sulum. 
+There is Go support [for SWIG bindings](http://www.swig.org/Doc2.0/Go.html), so
+it should be possible to write a wrapper that would connect to those other
+solvers via the or-tools library as well.
 
 ## License
 
-The golp golang code itself is MIT licensed. However, LPSolve itself is [licensed under the LGPL](http://lpsolve.sourceforge.net/5.5/LGPL.htm). The `stringbuilder.c` code is from [breckinloggins/libuseful](https://github.com/breckinloggins/libuseful).
+The LPSolve library this project depends on is
+[LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm). 
 
+The `stringbuilder.c` code is from [breckinloggins/libuseful](https://github.com/breckinloggins/libuseful).
+
+The golp Go code is MIT licensed as follows:
+
+The MIT License (MIT)
+
+Copyright (c) 2015 David Raffensperger
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
