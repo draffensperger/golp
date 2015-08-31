@@ -1,3 +1,4 @@
+// Package golp gives Go bindings for LPSolve.
 package golp
 
 import (
@@ -5,6 +6,7 @@ import (
 	"testing"
 )
 
+// TestLP tests a real-valued linear programming example
 func TestLP(t *testing.T) {
 	lp := NewLP(0, 2)
 	lp.SetVerboseLevel(NEUTRAL)
@@ -34,6 +36,7 @@ func TestLP(t *testing.T) {
 	assert.InDelta(t, 53.125, vars[1], delta)
 }
 
+// TestMIP tests a mixed-integer programming example
 func TestMIP(t *testing.T) {
 	lp := NewLP(0, 4)
 	lp.AddConstraintSparse([]Entry{{0, 1.0}, {1, 1.0}}, LE, 5.0)
