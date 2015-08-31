@@ -7,6 +7,9 @@ For usage examples, see https://github.com/draffensperger/golp#examples.
 Not all LPSolve functions have bindings. Feel free to open an issue or
 contact me if you would like more added.
 
+One difference from the LPSolve C library, is that the golp columns are always
+zero-based.
+
 The Go code of golp is MIT licensed, but LPSolve itself is licensed under the
 LGPL. This roughly means that you can include golp in a closed-source project 
 as long as you do not modify LPSolve itself and you use dynamic linking to
@@ -56,11 +59,24 @@ func NewLP(rows, cols int) *LP {
 	l.ptr = C.make_lp(C.int(rows), C.int(cols))
 	runtime.SetFinalizer(l, deleteLP)
 	l.SetAddRowMode(true)
+	l.SetVerboseLevel(IMPORTANT)
 	return l
 }
 
 func deleteLP(l *LP) {
 	C.delete_lp(l.ptr)
+}
+
+// NumRows returns the number of rows (constraints) in the linear program.
+// See http://lpsolve.sourceforge.net/5.5/get_Nrows.htm
+func (l *LP) NumRows() int {
+	return int(C.get_Nrows(l.ptr))
+}
+
+// NumCols returns the number of columns (variables) in the linear program.
+// See http://lpsolve.sourceforge.net/5.5/get_Ncolumns.htm
+func (l *LP) NumCols() int {
+	return int(C.get_Ncolumns(l.ptr))
 }
 
 // Verbose levels
@@ -74,7 +90,8 @@ const ( // iota is reset to 0
 	FULL
 )
 
-// SetVerboseLevel changes the output verbose level
+// SetVerboseLevel changes the output verbose level (golp defaults it to
+// IMPORTANT).
 // See http://lpsolve.sourceforge.net/5.1/set_verbose.htm
 func (l *LP) SetVerboseLevel(level int) {
 	C.set_verbose(l.ptr, C.int(level))
@@ -87,9 +104,34 @@ func (l *LP) SetColName(col int, name string) {
 	C.free(unsafe.Pointer(cstrName))
 }
 
-// GetColName gives a column name, index is zero-based.
-func (l *LP) GetColName(col int) string {
+// ColName gives a column name, index is zero-based.
+func (l *LP) ColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
+}
+
+// SetInt specifies that the given column must take an integer value.
+// This triggers LPSolve to use branch-and-bound instead of simplex to solve.
+// See http://lpsolve.sourceforge.net/5.5/set_int.htm
+func (l *LP) SetInt(col int, mustBeInt bool) {
+	C.set_int(l.ptr, C.int(col + 1), boolToUChar(mustBeInt))
+}
+
+// IsInt returns whether the given column must take an integer value
+// See http://lpsolve.sourceforge.net/5.5/is_int.htm
+func (l *LP) IsInt(col int) bool {
+	return uCharToBool(C.is_int(l.ptr, C.int(col + 1)))
+}
+
+// SetBinary specifies that the given column bust take a binary (0 or 1) value
+// See http://lpsolve.sourceforge.net/5.5/set_binary.htm
+func (l *LP) SetBinary(col int, mustBeBinary bool) {
+	C.set_binary(l.ptr, C.int(col + 1), boolToUChar(mustBeBinary))
+}
+
+// IsBinary returns whether the given column must take a binary (0 or 1) value
+// See http://lpsolve.sourceforge.net/5.5/is_binary.htm
+func (l *LP) IsBinary(col int) bool {
+	return uCharToBool(C.is_binary(l.ptr, C.int(col + 1)))
 }
 
 // SetAddRowMode specifies whether adding by row (true) or by column (false) 
@@ -104,6 +146,10 @@ func boolToUChar(b bool) C.uchar {
 		return C.uchar(1)
 	}
 	return C.uchar(0)
+}
+
+func uCharToBool(c C.uchar) bool {
+	return c != C.uchar(0)
 }
 
 // ConstraintType can be less than (golp.LE), greater than (golp.GE) or equal (golp.EQ)
@@ -151,11 +197,9 @@ func (l *LP) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float
 	return nil
 }
 
-// SetObjFn changes the objective function and whether to maximize it or 
-// minimize it. Row indices are zero-based.
+// SetObjFn changes the objective function. Row indices are zero-based.
 // See http://lpsolve.sourceforge.net/5.5/set_obj_fn.htm
-// and http://lpsolve.sourceforge.net/5.5/set_maxim.htm
-func (l *LP) SetObjFn(row []float64, maximize bool) {
+func (l *LP) SetObjFn(row []float64) {
 	l.SetAddRowMode(false)
 
 	cRow := make([]C.double, len(row)+1)
@@ -164,10 +208,13 @@ func (l *LP) SetObjFn(row []float64, maximize bool) {
 		cRow[i+1] = C.double(row[i])
 	}
 	C.set_obj_fn(l.ptr, &cRow[0])
+}
 
-	if maximize {
-		C.set_maxim(l.ptr)
-	}
+// SetMaximize will set the objective function  to maximize instead of
+// minimizing by default.
+// and http://lpsolve.sourceforge.net/5.5/set_maxim.htm
+func (l *LP) SetMaximize() {
+	C.set_maxim(l.ptr)
 }
 
 // SolutionType represents the result type
@@ -211,16 +258,16 @@ func (l *LP) WriteToString() string {
 	return str
 }
 
-// GetObjective gives the value of the objective function of the solved linear
+// Objective gives the value of the objective function of the solved linear
 // program.
 // See http://lpsolve.sourceforge.net/5.5/get_objective.htm
-func (l *LP) GetObjective() float64 {
+func (l *LP) Objective() float64 {
 	return float64(C.get_objective(l.ptr))
 }
 
-// GetVariables return the values for the variables of the solved linear program
+// Variables return the values for the variables of the solved linear program
 // See http://lpsolve.sourceforge.net/5.5/get_variables.htm
-func (l *LP) GetVariables() []float64 {
+func (l *LP) Variables() []float64 {
 	numCols := int(C.get_Ncolumns(l.ptr))
 	cRow := make([]C.double, numCols)
 	C.get_variables(l.ptr, &cRow[0])
