@@ -5,8 +5,10 @@ engines:
     enabled: true
   golint:
     enabled: true
+    exclude_paths:
+     - "*_test.go"
 ratings:
   paths:
   - "*.go"
 exclude_paths:
-- Godeps/**/*
+- "Godeps/**/*"

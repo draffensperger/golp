@@ -32,9 +32,10 @@ since LP Solve is [LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm).
 ## Usage 
 
 Not all LPSolve functions are supported, but it's currently possible to run a 
-simple linear and integer program using golp. Note that unlike the LP Solve C
-library, the column indices are always zero based. Feel free to open a GitHub
-issue or pull request if you'd like more functions added.
+simple linear and integer program using golp. For details, see the 
+[golp GoDoc page](http://godoc.org/github.com/draffensperger/golp).
+
+Feel free to open a GitHub issue or pull request if you'd like more functions added.
 
 ### Example with real-valued variables
 
