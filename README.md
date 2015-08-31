@@ -1,4 +1,4 @@
-[![GoDoc](https://godoc.org/github.com/draffensperger/golp?status.svg)](https://godoc.org/github.com/draffensperger/golp) [![Build Status](https://travis-ci.org/draffensperger/golp.svg?branch=master)](https://travis-ci.org/draffensperger/golp)
+[![GoDoc](https://godoc.org/github.com/draffensperger/golp?status.svg)](https://godoc.org/github.com/draffensperger/golp) [![Build Status](https://travis-ci.org/draffensperger/golp.svg?branch=master)](https://travis-ci.org/draffensperger/golp) [![Code Climate](https://codeclimate.com/github/draffensperger/golp/badges/gpa.svg)](https://codeclimate.com/github/draffensperger/golp)
 
 Golp is a Golang wrapper for the [LPSolve](http://lpsolve.sourceforge.net/5.5/) linear (and integer) programming library.
 
@@ -113,7 +113,7 @@ x3 = 2
 x4 = 0
 ```
 
-## Alternative linear programming libraries
+## Alternative linear / mixed integer solver libraries
 
 There are also Go bindings for the GPL-licensed
 [GNU Linear Programming Kit (GLPK)](http://www.gnu.org/software/glpk/) at
