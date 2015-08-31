@@ -1,5 +1,5 @@
 /*
-Package golp gives Go bindings for LPSolve, a Mixed Integer Linear 
+Package golp gives Go bindings for LPSolve, a Mixed Integer Linear
 Programming (MILP) solver.
 
 For usage examples, see https://github.com/draffensperger/golp#examples.
@@ -11,10 +11,10 @@ One difference from the LPSolve C library, is that the golp columns are always
 zero-based.
 
 The Go code of golp is MIT licensed, but LPSolve itself is licensed under the
-LGPL. This roughly means that you can include golp in a closed-source project 
+LGPL. This roughly means that you can include golp in a closed-source project
 as long as you do not modify LPSolve itself and you use dynamic linking to
 access LPSolve (and provide a way for someone to link your program to a
-different version of LPSolve). 
+different version of LPSolve).
 For the legal details: http://lpsolve.sourceforge.net/5.0/LGPL.htm
 */
 package golp
@@ -51,7 +51,7 @@ type LP struct {
 	ptr *C.lprec
 }
 
-// NewLP create a new linear program structure with specified number of rows and 
+// NewLP create a new linear program structure with specified number of rows and
 // columns. The underlying C data structure's memory will be freed in a Go
 // finalizer, so there is no need to explicitly deallocate it.
 func NewLP(rows, cols int) *LP {
@@ -113,28 +113,28 @@ func (l *LP) ColName(col int) string {
 // This triggers LPSolve to use branch-and-bound instead of simplex to solve.
 // See http://lpsolve.sourceforge.net/5.5/set_int.htm
 func (l *LP) SetInt(col int, mustBeInt bool) {
-	C.set_int(l.ptr, C.int(col + 1), boolToUChar(mustBeInt))
+	C.set_int(l.ptr, C.int(col+1), boolToUChar(mustBeInt))
 }
 
 // IsInt returns whether the given column must take an integer value
 // See http://lpsolve.sourceforge.net/5.5/is_int.htm
 func (l *LP) IsInt(col int) bool {
-	return uCharToBool(C.is_int(l.ptr, C.int(col + 1)))
+	return uCharToBool(C.is_int(l.ptr, C.int(col+1)))
 }
 
 // SetBinary specifies that the given column bust take a binary (0 or 1) value
 // See http://lpsolve.sourceforge.net/5.5/set_binary.htm
 func (l *LP) SetBinary(col int, mustBeBinary bool) {
-	C.set_binary(l.ptr, C.int(col + 1), boolToUChar(mustBeBinary))
+	C.set_binary(l.ptr, C.int(col+1), boolToUChar(mustBeBinary))
 }
 
 // IsBinary returns whether the given column must take a binary (0 or 1) value
 // See http://lpsolve.sourceforge.net/5.5/is_binary.htm
 func (l *LP) IsBinary(col int) bool {
-	return uCharToBool(C.is_binary(l.ptr, C.int(col + 1)))
+	return uCharToBool(C.is_binary(l.ptr, C.int(col+1)))
 }
 
-// SetAddRowMode specifies whether adding by row (true) or by column (false) 
+// SetAddRowMode specifies whether adding by row (true) or by column (false)
 // performs best. By default NewLP sets this for adding by row to perform best.
 // See http://lpsolve.sourceforge.net/5.5/set_add_rowmode.htm
 func (l *LP) SetAddRowMode(addRowMode bool) {
@@ -163,10 +163,10 @@ const ( // iota is reset to 0
 	EQ        // EQ == 3
 )
 
-// AddConstraint adds a constraint to the linear program. This (unlike the 
-// LPSolve C function), exects the data in the row param to start at index 0 
+// AddConstraint adds a constraint to the linear program. This (unlike the
+// LPSolve C function), exects the data in the row param to start at index 0
 // for the first column.
-// See http://lpsolve.sourceforge.net/5.5/add_constraint.htm  
+// See http://lpsolve.sourceforge.net/5.5/add_constraint.htm
 func (l *LP) AddConstraint(row []float64, ct ConstraintType, rightHand float64) error {
 	cRow := make([]C.double, len(row)+1)
 	cRow[0] = 0.0
@@ -183,7 +183,7 @@ type Entry struct {
 	Val float64
 }
 
-// AddConstraintSparse adds a constraint row by specifying only the non-zero 
+// AddConstraintSparse adds a constraint row by specifying only the non-zero
 // entries. Entries column indices are zero-based.
 // See http://lpsolve.sourceforge.net/5.5/add_constraint.htm
 func (l *LP) AddConstraintSparse(row []Entry, ct ConstraintType, rightHand float64) error {
