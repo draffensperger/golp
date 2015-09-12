@@ -1,7 +1,7 @@
 language: go
 before_install:
-- mkdir -p lib/lp_solve
-- wget -qO- https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz | tar xvz -C lib/lp_solve
+- mkdir lpsolve
+- curl -L https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz | tar xvz -C lpsolve
 go:
 - 1.4
 - 1.5

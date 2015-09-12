@@ -20,8 +20,10 @@ For the legal details: http://lpsolve.sourceforge.net/5.0/LGPL.htm
 package golp
 
 /*
-#cgo CFLAGS: -I./lib/lp_solve
-#cgo LDFLAGS: -L./lib/lp_solve/ -llpsolve55 -Wl,-rpath=./lib/lp_solve
+#cgo darwin CFLAGS: -I/opt/local/include/lpsolve
+#cgo darwin LDFLAGS: -L/opt/local/lib -llpsolve55
+#cgo linux CFLAGS: -I./lpsolve
+#cgo linux LDFLAGS: -L./lpsolve -llpsolve55 -Wl,-rpath=./lpsolve
 #include <stdlib.h>
 #include "lp_lib.h"
 #include "stringbuilder.h"
