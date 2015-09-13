@@ -24,8 +24,8 @@ package golp
 #cgo darwin LDFLAGS: -L/opt/local/lib -llpsolve55
 #cgo linux CFLAGS: -I./lpsolve
 #cgo linux LDFLAGS: -L./lpsolve -llpsolve55 -Wl,-rpath=./lpsolve
-#include <stdlib.h>
 #include "lp_lib.h"
+#include <stdlib.h>
 #include "stringbuilder.h"
 
 int write_lp_to_str_callback(void* userhandle, char* buf) {
