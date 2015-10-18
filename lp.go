@@ -20,10 +20,14 @@ For the legal details: http://lpsolve.sourceforge.net/5.0/LGPL.htm
 package golp
 
 /*
+// For Mac, assume LPSolve installed via MacPorts
 #cgo darwin CFLAGS: -I/opt/local/include/lpsolve
 #cgo darwin LDFLAGS: -L/opt/local/lib -llpsolve55
+
+// For Linux, assume LPSolve bundled in local lpsolve directory
 #cgo linux CFLAGS: -I./lpsolve
 #cgo linux LDFLAGS: -L./lpsolve -llpsolve55 -Wl,-rpath=./lpsolve
+
 #include "lp_lib.h"
 #include <stdlib.h>
 #include "stringbuilder.h"

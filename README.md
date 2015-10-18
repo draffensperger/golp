@@ -21,9 +21,12 @@ Here's how you could download and extract the LPSolve library for 64-bit Linux:
 
 ```
 LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
-mkdir -p lib/lp_solve
-wget -qO- $LP_URL | tar xvz -C lib/lp_solve
+mkdir lpsolve
+curl -L $LP_URL | tar xvz -C lpsolve
 ```
+
+To install LPSolve on Mac OS X, install [MacPorts](https://www.macports.org/),
+then run `sudo port install lp_solve`.
 
 With some configuration changes, it would be possible to statically link to 
 LPSolve but that may have licensing/distribution implications for your project 
