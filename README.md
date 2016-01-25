@@ -12,8 +12,12 @@ go get github.com/draffensperger/golp
 
 **Step 2: Get the LPSolve library**
 
-Golp is configured to dynamically link to LPSolve and expects its files to be 
-in the `lib/lp_solve` folder for your project.  You will need an LPSolve library 
+Golp is configured to dynamically link to LPSolve and expects lpsolve to reside in the following places:
+
+Mac: `/opt/local/includes/lpsolve` && `/opt/local/lib` which is where ports puts it.
+Linux: `$GOPATH/src/github.com/draffensperger/golp/lpsolve`.
+
+You will need an LPSolve library 
 suitable for your operating system, which you can 
 [get from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
 
@@ -21,8 +25,9 @@ Here's how you could download and extract the LPSolve library for 64-bit Linux:
 
 ```
 LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
-mkdir lpsolve
-curl -L $LP_URL | tar xvz -C lpsolve
+LP_DIR=$GOPATH/src/github.com/draffensperger/golp/lpsolve
+mkdir -p $GOPATH/lpsolve
+curl -L $LP_URL | tar xvz -C $LP_DIR
 ```
 
 To install LPSolve on Mac OS X, install [MacPorts](https://www.macports.org/),
