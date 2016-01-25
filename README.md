@@ -135,12 +135,14 @@ There is Go support [for SWIG bindings](http://www.swig.org/Doc2.0/Go.html), so
 it should be possible to write a wrapper that would connect to those other
 solvers via the or-tools library as well.
 
-## License
+## Acknowledgements and License
 
 The LPSolve library this project depends on is
 [LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm). 
 
 The `stringbuilder.c` code is from [breckinloggins/libuseful](https://github.com/breckinloggins/libuseful).
+
+Thanks to Mike Gaffney (gaffo) for correcting the Linux install instructions.
 
 The golp Go code is MIT licensed as follows:
 
