@@ -170,7 +170,7 @@ const ( // iota is reset to 0
 )
 
 // AddConstraint adds a constraint to the linear program. This (unlike the
-// LPSolve C function), exects the data in the row param to start at index 0
+// LPSolve C function), expects the data in the row param to start at index 0
 // for the first column.
 // See http://lpsolve.sourceforge.net/5.5/add_constraint.htm
 func (l *LP) AddConstraint(row []float64, ct ConstraintType, rightHand float64) error {
