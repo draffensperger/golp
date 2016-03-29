@@ -115,6 +115,14 @@ func (l *LP) ColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
 }
 
+// SetUnbounded specifies that the given column has a lower bound of -infinity
+// and an upper bound of +infinity. (By default, columns have a lower bound of
+// 0 and an upper bound of +infinity.)
+// See http://lpsolve.sourceforge.net/5.5/set_unbounded.htm
+func (l *LP) SetUnbounded(col int) {
+	C.set_unbounded(l.ptr, C.int(col+1))
+}
+
 // SetInt specifies that the given column must take an integer value.
 // This triggers LPSolve to use branch-and-bound instead of simplex to solve.
 // See http://lpsolve.sourceforge.net/5.5/set_int.htm
@@ -128,7 +136,7 @@ func (l *LP) IsInt(col int) bool {
 	return uCharToBool(C.is_int(l.ptr, C.int(col+1)))
 }
 
-// SetBinary specifies that the given column bust take a binary (0 or 1) value
+// SetBinary specifies that the given column must take a binary (0 or 1) value
 // See http://lpsolve.sourceforge.net/5.5/set_binary.htm
 func (l *LP) SetBinary(col int, mustBeBinary bool) {
 	C.set_binary(l.ptr, C.int(col+1), boolToUChar(mustBeBinary))
