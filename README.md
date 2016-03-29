@@ -15,10 +15,11 @@ go get github.com/draffensperger/golp
 Golp is configured to dynamically link to LPSolve and expects lpsolve to reside in the following places:
 
 Mac: `/opt/local/includes/lpsolve` && `/opt/local/lib` which is where ports puts it.
-Linux: `$GOPATH/src/github.com/draffensperger/golp/lpsolve`.
 
-You will need an LPSolve library 
-suitable for your operating system, which you can 
+Linux (general): `$GOPATH/src/github.com/draffensperger/golp/lpsolve`.
+
+You will need an LPSolve library
+suitable for your operating system, which you can
 [get from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
 
 Here's how you could download and extract the LPSolve library for 64-bit Linux:
@@ -33,21 +34,23 @@ curl -L $LP_URL | tar xvz -C $LP_DIR
 To install LPSolve on Mac OS X, install [MacPorts](https://www.macports.org/),
 then run `sudo port install lp_solve`.
 
-With some configuration changes, it would be possible to statically link to 
-LPSolve but that may have licensing/distribution implications for your project 
-since LP Solve is [LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm). 
+On Debian 8+ you can install the lpsolve package with `sudo apt-get install liblpsolve55-dev` and then just remove the two `#cgo linux` lines in `lp.go` and that will work as well.
 
-## Usage 
+With some configuration changes, it would be possible to statically link to
+LPSolve but that may have licensing/distribution implications for your project
+since LP Solve is [LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm).
 
-Not all LPSolve functions are supported, but it's currently possible to run a 
-simple linear and integer program using golp. For details, see the 
+## Usage
+
+Not all LPSolve functions are supported, but it's currently possible to run a
+simple linear and integer program using golp. For details, see the
 [golp GoDoc page](http://godoc.org/github.com/draffensperger/golp).
 
 Feel free to open a GitHub issue or pull request if you'd like more functions added.
 
 ### Example with real-valued variables
 
-The example below in an adaption of an example in the 
+The example below in an adaption of an example in the
 [LP Solve documentation.](http://lpsolve.sourceforge.net/5.5/formulate.htm)
 for maximizing a farmer's profit.
 
@@ -130,7 +133,7 @@ There are also Go bindings for the GPL-licensed
 
 The Google [or-tools](https://github.com/google/or-tools) project provides a C++
 SWIG compatible inteface for a number of other linear and mixed integer solvers
-like CBC, CLP, GLOP, Gurobi, CPLEX, SCIP, and Sulum. 
+like CBC, CLP, GLOP, Gurobi, CPLEX, SCIP, and Sulum.
 There is Go support [for SWIG bindings](http://www.swig.org/Doc2.0/Go.html), so
 it should be possible to write a wrapper that would connect to those other
 solvers via the or-tools library as well.
@@ -138,11 +141,12 @@ solvers via the or-tools library as well.
 ## Acknowledgements and License
 
 The LPSolve library this project depends on is
-[LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm). 
+[LGPL licensed](http://lpsolve.sourceforge.net/5.5/LGPL.htm).
 
 The `stringbuilder.c` code is from [breckinloggins/libuseful](https://github.com/breckinloggins/libuseful).
 
 Thanks to Mike Gaffney (gaffo) for correcting the Linux install instructions.
+Thanks to khaaan for a typo fix and Debian 8 install instructions.
 
 The golp Go code is MIT licensed as follows:
 
