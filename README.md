@@ -7,7 +7,7 @@ Golp is a Golang wrapper for the [LPSolve](http://lpsolve.sourceforge.net/5.5/) 
 **Step 1: Get the golp Go code**
 
 ```
-go get github.com/draffensperger/golp
+go get -d github.com/draffensperger/golp
 ```
 
 **Step 2: Get the LPSolve library**
@@ -27,7 +27,7 @@ Here's how you could download and extract the LPSolve library for 64-bit Linux:
 ```
 LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
 LP_DIR=$GOPATH/src/github.com/draffensperger/golp/lpsolve
-mkdir -p $GOPATH/lpsolve
+mkdir -p $LP_DIR
 curl -L $LP_URL | tar xvz -C $LP_DIR
 ```
 
