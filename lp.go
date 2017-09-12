@@ -333,7 +333,6 @@ func (t SolutionType) String() string {
 	}
 }
 
-
 // Solve the linear (or mixed integer) program and return the solution type
 // See http://lpsolve.sourceforge.net/5.5/solve.htm
 func (l *LP) Solve() SolutionType {
