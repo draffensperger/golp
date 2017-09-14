@@ -48,6 +48,7 @@ char* write_lp_to_str(lprec *lp) {
 import "C"
 
 import (
+	"fmt"
 	"runtime"
 	"unsafe"
 )
@@ -85,10 +86,14 @@ func (l *LP) NumCols() int {
 	return int(C.get_Ncolumns(l.ptr))
 }
 
+// VerboseLevel represents different verbose levels,
+// see http://lpsolve.sourceforge.net/5.1/set_verbose.htm
+type VerboseLevel int
+
 // Verbose levels
-const ( // iota is reset to 0
-	NEUTRAL  = iota // NEUTRAL == 0
-	CRITICAL        // CRITICAL == 1
+const (
+	NEUTRAL  VerboseLevel = iota // NEUTRAL == 0
+	CRITICAL                     // CRITICAL == 1
 	SEVERE
 	IMPORTANT
 	NORMAL
@@ -96,10 +101,34 @@ const ( // iota is reset to 0
 	FULL
 )
 
+// Note that we can't use stringer because this does not work well with cgo
+// yet: https://github.com/golang/go/issues/20358
+
+func (level VerboseLevel) String() string {
+	switch level {
+	case NEUTRAL:
+		return "NEUTRAL"
+	case CRITICAL:
+		return "CRITICAL"
+	case SEVERE:
+		return "SEVERE"
+	case IMPORTANT:
+		return "IMPORTANT"
+	case NORMAL:
+		return "NORMAL"
+	case DETAILED:
+		return "DETAILED"
+	case FULL:
+		return "FULL"
+	default:
+		return fmt.Sprintf("VerboseLevel(%d)", int(level))
+	}
+}
+
 // SetVerboseLevel changes the output verbose level (golp defaults it to
 // IMPORTANT).
 // See http://lpsolve.sourceforge.net/5.1/set_verbose.htm
-func (l *LP) SetVerboseLevel(level int) {
+func (l *LP) SetVerboseLevel(level VerboseLevel) {
 	C.set_verbose(l.ptr, C.int(level))
 }
 
@@ -171,11 +200,24 @@ type ConstraintType int
 
 // Contraint type constants
 const ( // iota is reset to 0
-	_  = iota // don't use 0
-	LE        // LE == 1
-	GE        // GE == 2
-	EQ        // EQ == 3
+	_  ConstraintType = iota // don't use 0
+	LE                       // LE == 1
+	GE                       // GE == 2
+	EQ                       // EQ == 3
 )
+
+func (t ConstraintType) String() string {
+	switch t {
+	case LE:
+		return "LE"
+	case GE:
+		return "GE"
+	case EQ:
+		return "EQ"
+	default:
+		return fmt.Sprintf("ConstraintType(%d)", int(t))
+	}
+}
 
 // AddConstraint adds a constraint to the linear program. This (unlike the
 // LPSolve C function), expects the data in the row param to start at index 0
@@ -231,26 +273,65 @@ func (l *LP) SetMaximize() {
 	C.set_maxim(l.ptr)
 }
 
-// SolutionType represents the result type
+// SolutionType represents the result type.
 type SolutionType int
 
-// Constacts for the solution result type
+// Return values must not be enumerated from 0 in, many are not used
+// any more and therefore there are gaps.
+// Also lpsolve55 will not return PROCFAIL and other types any more,
+// they're here for compatibility reasons.
+// To make this clear we don't use iota but list the values.
+
+// Constants for the solution result type.
 // See http://lpsolve.sourceforge.net/5.5/solve.htm
-const ( // iota is reset to 0
-	NOMEMORY   = -2
-	OPTIMAL    = iota // don't use 0
-	SUBOPTIMAL        // SUBOPTIMAL == 1
-	INFEASIBLE        // INFEASIBLE == 2
-	UNBOUNDED
-	DEGENERATE
-	NUMFAILURE
-	USERABORT
-	TIMEOUT
-	PROCFAIL
-	PROCBREAK
-	FEASFOUND
-	NOFEASFOUND
+const (
+	NOMEMORY    SolutionType = -2
+	OPTIMAL                  = 0
+	SUBOPTIMAL               = 1
+	INFEASIBLE               = 2
+	UNBOUNDED                = 3
+	DEGENERATE               = 4
+	NUMFAILURE               = 5
+	USERABORT                = 6
+	TIMEOUT                  = 7
+	PROCFAIL                 = 10
+	PROCBREAK                = 11
+	FEASFOUND                = 12
+	NOFEASFOUND              = 13
 )
+
+func (t SolutionType) String() string {
+	switch t {
+	case NOMEMORY:
+		return "NOMEMORY"
+	case OPTIMAL:
+		return "OPTIMAL"
+	case SUBOPTIMAL:
+		return "SUBOPTIMAL"
+	case INFEASIBLE:
+		return "INFEASIBLE"
+	case UNBOUNDED:
+		return "UNBOUNDED"
+	case DEGENERATE:
+		return "DEGENERATE"
+	case NUMFAILURE:
+		return "NUMFAILURE"
+	case USERABORT:
+		return "USERABORT"
+	case TIMEOUT:
+		return "TIMEOUT"
+	case PROCFAIL:
+		return "PROCFAIL"
+	case PROCBREAK:
+		return "PROCBREAK"
+	case FEASFOUND:
+		return "FEASFOUND"
+	case NOFEASFOUND:
+		return "NOFEASFOUND"
+	default:
+		return fmt.Sprintf("SolutionType(%d)", int(t))
+	}
+}
 
 // Solve the linear (or mixed integer) program and return the solution type
 // See http://lpsolve.sourceforge.net/5.5/solve.htm
