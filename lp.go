@@ -195,6 +195,96 @@ func uCharToBool(c C.uchar) bool {
 	return c != C.uchar(0)
 }
 
+// PresolveType specifies type of presolve,
+// see http://lpsolve.sourceforge.net/5.5/set_presolve.htm
+type PresolveType int
+
+// Presolve types
+const (
+	NONE        PresolveType = 0
+	ROWS                     = 1
+	COLS                     = 2
+	LINDEP                   = 4
+	SOS                      = 32
+	REDUCEMIP                = 64
+	KNAPSACK                 = 128
+	ELIMEQ2                  = 256
+	IMPLIEDFREE              = 512
+	REDUCEGCD                = 1024
+	PROBEFIX                 = 2048
+	PROBEREDUCE              = 4096
+	ROWDOMANITE              = 8192
+	COLDOMINATE              = 16384
+	MERGEROWS                = 32768
+	COLFIXDUAL               = 131072
+	BOUNDS                   = 262144
+	DUALS                    = 524288
+	SENSDUALS                = 1048576
+)
+
+func (level PresolveType) String() string {
+	switch level {
+	case NONE:
+		return "PRESOLVE_NONE"
+	case ROWS:
+		return "PRESOLVE_ROWS"
+	case COLS:
+		return "PRESOLVE_COLS"
+	case LINDEP:
+		return "PRESOLVE_LINDEP"
+	case SOS:
+		return "PRESOLVE_SOS"
+	case REDUCEMIP:
+		return "PRESOLVE_REDUCEMIP"
+	case KNAPSACK:
+		return "PRESOLVE_KNAPSACK"
+	case ELIMEQ2:
+		return "PRESOLVE_ELIMEQ2"
+	case IMPLIEDFREE:
+		return "PRESOLVE_IMPLIEDFREE"
+	case REDUCEGCD:
+		return "PRESOLVE_REDUCEGCD"
+	case PROBEFIX:
+		return "PRESOLVE_PROBEFIX"
+	case PROBEREDUCE:
+		return "PRESOLVE_PROBEREDUCE"
+	case ROWDOMANITE:
+		return "PRESOLVE_ROWDOMINATE"
+	case COLDOMINATE:
+		return "PRESOLVE_COLDOMINATE"
+	case MERGEROWS:
+		return "PRESOLVE_MERGEROWS"
+	case COLFIXDUAL:
+		return "PRESOLVE_COLFIXDUAL"
+	case BOUNDS:
+		return "PRESOLVE_BOUNDS"
+	case DUALS:
+		return "PRESOLVE_DUALS"
+	case SENSDUALS:
+		return "PRESOLVE_SENSDUALS"
+	default:
+		return fmt.Sprintf("PresolveType(%d)", int(level))
+	}
+}
+
+// SetPresolve specifies whether pre solve should be used to try to simplify problem,
+// by default it is set to not to perform pre solve, level specifies type of pre solve
+// and maxLoops the maximum number of times pre solve may be done (use 0 to determine
+// number of pre solve loops automatically by get_presolveloop()).
+// For more info see: http://lpsolve.sourceforge.net/5.5/set_presolve.htm
+func (l *LP) SetPresolve(level PresolveType, maxLoops int) {
+	if maxLoops == 0 {
+		maxLoops = l.GetPresolveLoops()
+	}
+	C.set_presolve(l.ptr, C.int(level), C.int(maxLoops))
+}
+
+// GetPresolveLoops determines optimal number of loops for pre solve.
+// See: http://lpsolve.sourceforge.net/5.5/get_presolveloops.htm
+func (l *LP) GetPresolveLoops() int {
+	return int(C.get_presolveloops(l.ptr))
+}
+
 // ConstraintType can be less than (golp.LE), greater than (golp.GE) or equal (golp.EQ)
 type ConstraintType int
 
