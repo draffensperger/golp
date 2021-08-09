@@ -18,6 +18,8 @@ Mac: `/opt/local/includes/lpsolve` && `/opt/local/lib` which is where ports puts
 
 Linux (general): `$GOPATH/src/github.com/draffensperger/golp/lpsolve`.
 
+Windows (general): `$GOPATH/src/github.com/draffensperger/golp@xxx/lpsolve`.
+
 You will need an LPSolve library
 suitable for your operating system, which you can
 [get from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
@@ -30,6 +32,13 @@ LP_DIR=$GOPATH/src/github.com/draffensperger/golp/lpsolve
 mkdir -p $LP_DIR
 curl -L $LP_URL | tar xvz -C $LP_DIR
 ```
+
+Here's how you could download the LPSolve library for 64-bit windows:
+```
+https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_win64.zip/download
+````
+Then extract content zip file in `$GOPATH/src/github.com/draffensperger/golp@xxx/lpsolve`.
+Finally, copy `lpsolve55.dll` file into your golang project directory (or maybe into `c:\windows\system32`).
 
 To install LPSolve on Mac OS X, install [MacPorts](https://www.macports.org/),
 then run `sudo port install lp_solve`.
