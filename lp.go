@@ -28,6 +28,10 @@ package golp
 #cgo linux CFLAGS: -I${SRCDIR}/lpsolve
 #cgo linux LDFLAGS: -L${SRCDIR}/lpsolve -llpsolve55 -Wl,-rpath=${SRCDIR}/lpsolve
 
+// For Windows, assume LPSolve bundled in local lpsolve directory
+#cgo windows CFLAGS: -I${SRCDIR}/lpsolve
+#cgo windows LDFLAGS: -L${SRCDIR}/lpsolve -llpsolve55 -Wl,-rpath=${SRCDIR}/lpsolve
+
 #include "lp_lib.h"
 #include <stdlib.h>
 #include "stringbuilder.h"
