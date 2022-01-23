@@ -24,15 +24,6 @@ You will need an LPSolve library
 suitable for your operating system, which you can
 [get from SourceForge](http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/).
 
-Here's how you could download and extract the LPSolve library for 64-bit Linux:
-
-```
-LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
-LP_DIR=$GOPATH/src/github.com/draffensperger/golp/lpsolve
-mkdir -p $LP_DIR
-curl -L $LP_URL | tar xvz -C $LP_DIR
-```
-
 Here's how you could download the LPSolve library for 64-bit windows:
 ```
 https://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_win64.zip/download
@@ -43,7 +34,21 @@ Finally, copy `lpsolve55.dll` file into your golang project directory (or maybe 
 To install LPSolve on Mac OS X, install [MacPorts](https://www.macports.org/),
 then run `sudo port install lp_solve`.
 
-On Debian 8+ you can install the lpsolve package with `sudo apt-get install liblpsolve55-dev` and then just remove the two `#cgo linux` lines in `lp.go` and that will work as well.
+
+Here's how you could download and extract the LPSolve library for 64-bit Linux:
+
+```
+LP_URL=http://sourceforge.net/projects/lpsolve/files/lpsolve/5.5.2.0/lp_solve_5.5.2.0_dev_ux64.tar.gz
+LP_DIR=$GOPATH/src/github.com/draffensperger/golp/lpsolve
+mkdir -p $LP_DIR
+curl -L $LP_URL | tar xvz -C $LP_DIR
+```
+
+On Debian 8+ you can install the lpsolve package with `sudo apt-get install liblpsolve55-dev` and then set the environment variables for LDFLAGS and CFLAGS like:
+```
+export CGO_CFLAGS="-I/usr/include/lpsolve"
+export CGO_LDFLAGS="-llpsolve55 -lm -ldl -lcolamd"
+```
 
 With some configuration changes, it would be possible to statically link to
 LPSolve but that may have licensing/distribution implications for your project
