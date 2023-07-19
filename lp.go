@@ -78,6 +78,12 @@ func deleteLP(l *LP) {
 	C.delete_lp(l.ptr)
 }
 
+func (l *LP) Copy() *LP {
+	cpy := &LP{C.copy_lp(l.ptr)}
+	runtime.SetFinalizer(cpy, deleteLP)
+	return cpy
+}
+
 // NumRows returns the number of rows (constraints) in the linear program.
 // See http://lpsolve.sourceforge.net/5.5/get_Nrows.htm
 func (l *LP) NumRows() int {
