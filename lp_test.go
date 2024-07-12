@@ -26,7 +26,8 @@ func TestLP(t *testing.T) {
 	lpString := "/* Objective function */\nmax: +143 x +60 y;\n\n/* Constraints */\n+120 x +210 y <= 15000;\n+110 x +30 y <= 4000;\n+x +y <= 75;\n"
 	assert.Equal(t, lpString, lp.WriteToString())
 
-	lp.Solve()
+	solType := lp.Solve()
+	assert.Equal(t, solType, OPTIMAL)
 
 	delta := 0.000001
 	assert.InDelta(t, 6315.625, lp.Objective(), delta)
@@ -55,7 +56,8 @@ func TestMIP(t *testing.T) {
 	lp.SetInt(2, true)
 	assert.Equal(t, lp.IsInt(2), true)
 
-	lp.Solve()
+	solType := lp.Solve()
+	assert.Equal(t, solType, OPTIMAL)
 
 	delta := 0.000001
 	assert.InDelta(t, -8.133333333, lp.Objective(), delta)

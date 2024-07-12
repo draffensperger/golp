@@ -212,24 +212,24 @@ type PresolveType int
 // Presolve types
 const (
 	NONE        PresolveType = 0
-	ROWS                     = 1
-	COLS                     = 2
-	LINDEP                   = 4
-	SOS                      = 32
-	REDUCEMIP                = 64
-	KNAPSACK                 = 128
-	ELIMEQ2                  = 256
-	IMPLIEDFREE              = 512
-	REDUCEGCD                = 1024
-	PROBEFIX                 = 2048
-	PROBEREDUCE              = 4096
-	ROWDOMANITE              = 8192
-	COLDOMINATE              = 16384
-	MERGEROWS                = 32768
-	COLFIXDUAL               = 131072
-	BOUNDS                   = 262144
-	DUALS                    = 524288
-	SENSDUALS                = 1048576
+	ROWS        PresolveType = 1
+	COLS        PresolveType = 2
+	LINDEP      PresolveType = 4
+	SOS         PresolveType = 32
+	REDUCEMIP   PresolveType = 64
+	KNAPSACK    PresolveType = 128
+	ELIMEQ2     PresolveType = 256
+	IMPLIEDFREE PresolveType = 512
+	REDUCEGCD   PresolveType = 1024
+	PROBEFIX    PresolveType = 2048
+	PROBEREDUCE PresolveType = 4096
+	ROWDOMANITE PresolveType = 8192
+	COLDOMINATE PresolveType = 16384
+	MERGEROWS   PresolveType = 32768
+	COLFIXDUAL  PresolveType = 131072
+	BOUNDS      PresolveType = 262144
+	DUALS       PresolveType = 524288
+	SENSDUALS   PresolveType = 1048576
 )
 
 func (level PresolveType) String() string {
@@ -386,18 +386,18 @@ type SolutionType int
 // See http://lpsolve.sourceforge.net/5.5/solve.htm
 const (
 	NOMEMORY    SolutionType = -2
-	OPTIMAL                  = 0
-	SUBOPTIMAL               = 1
-	INFEASIBLE               = 2
-	UNBOUNDED                = 3
-	DEGENERATE               = 4
-	NUMFAILURE               = 5
-	USERABORT                = 6
-	TIMEOUT                  = 7
-	PROCFAIL                 = 10
-	PROCBREAK                = 11
-	FEASFOUND                = 12
-	NOFEASFOUND              = 13
+	OPTIMAL     SolutionType = 0
+	SUBOPTIMAL  SolutionType = 1
+	INFEASIBLE  SolutionType = 2
+	UNBOUNDED   SolutionType = 3
+	DEGENERATE  SolutionType = 4
+	NUMFAILURE  SolutionType = 5
+	USERABORT   SolutionType = 6
+	TIMEOUT     SolutionType = 7
+	PROCFAIL    SolutionType = 10
+	PROCBREAK   SolutionType = 11
+	FEASFOUND   SolutionType = 12
+	NOFEASFOUND SolutionType = 13
 )
 
 func (t SolutionType) String() string {
