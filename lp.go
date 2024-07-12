@@ -366,7 +366,7 @@ func (l *LP) SetObjFn(row []float64) {
 	C.set_obj_fn(l.ptr, &cRow[0])
 }
 
-// SetMaximize will set the objective function  to maximize instead of
+// SetMaximize will set the objective function to maximize instead of
 // minimizing by default.
 // and http://lpsolve.sourceforge.net/5.5/set_maxim.htm
 func (l *LP) SetMaximize() {
@@ -471,4 +471,40 @@ func (l *LP) Variables() []float64 {
 		row[i] = float64(cRow[i])
 	}
 	return row
+}
+
+// Duals retrieves all dual variable aka reduced costs.
+// Duals should be called only after Solve() is successful.
+// See https://lpsolve.sourceforge.net/5.5/get_sensitivity_rhs.htm
+func (l *LP) Duals() []float64 {
+
+	numRows := int(C.get_Nrows(l.ptr))
+	numCols := int(C.get_Ncolumns(l.ptr))
+
+	cRow := make([]C.double, numRows+numCols+1)
+	C.get_dual_solution(l.ptr, &cRow[0])
+	row := make([]float64, numCols)
+	for i := 0; i < numCols; i++ {
+		// value index 0 is not used and only values
+		// from index 1 onward are considered
+		row[i] = float64(cRow[i+1])
+	}
+	return row
+}
+
+// DualResult retrieves dual variable aka reduced costs for given index.
+// DualResult should be called only after Solve() is successful.
+// Duals indexing starts from 0.
+// See https://lpsolve.sourceforge.net/5.5/get_sensitivity_rhs.htm
+func (l *LP) DualResult(index int) float64 {
+	var dualRes C.double
+	// C.get_var_dualresult value indexing starts from 1,
+	// this is accounted for and indexing is shifted here.
+	dualRes = C.get_var_dualresult(l.ptr, C.int(index+1))
+	// Call to C.get_var_dualresult with 0 index returns
+	// objective value and is equivalent to calling C.get_objective()
+	// This is not supported, l.Objective() should be used for
+	// retrieving that value.
+
+	return float64(dualRes)
 }
