@@ -37,10 +37,8 @@ func TestLP(t *testing.T) {
 	assert.InDelta(t, 21.875, vars[0], delta)
 	assert.InDelta(t, 53.125, vars[1], delta)
 
-	duals := lp.Duals()
-	assert.Equal(t, len(duals), 2)
-	assert.InDelta(t, 0, duals[0], delta)
-	assert.InDelta(t, 1.0375, duals[1], delta)
+	assert.InDelta(t, 0.0, lp.DualResult(0), delta)
+	assert.InDelta(t, 1.0375, lp.DualResult(1), delta)
 }
 
 // TestMIP tests a mixed-integer programming example
@@ -70,8 +68,11 @@ func TestMIP(t *testing.T) {
 	assert.InDelta(t, 2.0, vars[2], delta)
 	assert.InDelta(t, 0.0, vars[3], delta)
 
-	assert.InDelta(t, -1.6666666666, lp.DualResult(0), delta)
-	assert.InDelta(t, 0.3333333333, lp.DualResult(1), delta)
-	assert.InDelta(t, 0.0, lp.DualResult(2), delta)
-	assert.InDelta(t, 0.0, lp.DualResult(3), delta)
+	duals := lp.Duals()
+	assert.Len(t, duals, 5)
+	assert.InDelta(t, -1.6666666666, duals[0], delta)
+	assert.InDelta(t, 0.3333333333, duals[1], delta)
+	assert.InDelta(t, 0.0, duals[2], delta)
+	assert.InDelta(t, 0.0, duals[3], delta)
+	assert.InDelta(t, 0.0, duals[4], delta)
 }

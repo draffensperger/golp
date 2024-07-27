@@ -477,14 +477,12 @@ func (l *LP) Variables() []float64 {
 // Duals should be called only after Solve() is successful.
 // See https://lpsolve.sourceforge.net/5.5/get_sensitivity_rhs.htm
 func (l *LP) Duals() []float64 {
-
 	numRows := int(C.get_Nrows(l.ptr))
-	numCols := int(C.get_Ncolumns(l.ptr))
 
-	cRow := make([]C.double, numRows+numCols+1)
+	cRow := make([]C.double, numRows+1)
 	C.get_dual_solution(l.ptr, &cRow[0])
-	row := make([]float64, numCols)
-	for i := 0; i < numCols; i++ {
+	row := make([]float64, numRows)
+	for i := 0; i < numRows; i++ {
 		// value index 0 is not used and only values
 		// from index 1 onward are considered
 		row[i] = float64(cRow[i+1])
