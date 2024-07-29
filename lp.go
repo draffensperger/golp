@@ -478,6 +478,7 @@ func (l *LP) Variables() []float64 {
 // See https://lpsolve.sourceforge.net/5.5/get_sensitivity_rhs.htm
 // This is not using `C.get_dual_solution()` because of suspicion
 // of memory corruption via the pointer that needs to be passed in.
+// See details at https://github.com/draffensperger/golp/issues/22
 func (l *LP) Duals() []float64 {
 	numRows := int(C.get_Nrows(l.ptr))
 	row := make([]float64, numRows)
