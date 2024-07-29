@@ -476,16 +476,17 @@ func (l *LP) Variables() []float64 {
 // Duals retrieves all dual variable aka reduced costs.
 // Duals should be called only after Solve() is successful.
 // See https://lpsolve.sourceforge.net/5.5/get_sensitivity_rhs.htm
+// This is not using `C.get_dual_solution()` because of suspicion
+// of memory corruption via the pointer that needs to be passed in.
 func (l *LP) Duals() []float64 {
 	numRows := int(C.get_Nrows(l.ptr))
-
-	cRow := make([]C.double, numRows+1)
-	C.get_dual_solution(l.ptr, &cRow[0])
 	row := make([]float64, numRows)
+	var dualRes C.double
 	for i := 0; i < numRows; i++ {
 		// value index 0 is not used and only values
 		// from index 1 onward are considered
-		row[i] = float64(cRow[i+1])
+		dualRes = C.get_var_dualresult(l.ptr, C.int(i+1))
+		row[i] = float64(dualRes)
 	}
 	return row
 }
