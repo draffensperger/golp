@@ -15,6 +15,12 @@ go get -d github.com/draffensperger/golp
 Golp is configured to dynamically link to LPSolve and expects lpsolve to reside in the following places:
 
 Mac: `/opt/local/includes/lpsolve` && `/opt/local/lib` which is where ports puts it.
+If you installed via homebrew (`brew install lp_solve`) then the paths are
+
+```
+export CGO_CFLAGS="-I/opt/homebrew/opt/lp_solve/include"
+export CGO_LDFLAGS="-L/opt/homebrew/opt/lp_solve/lib"
+```
 
 Linux (general): `$GOPATH/src/github.com/draffensperger/golp/lpsolve`.
 
@@ -68,7 +74,7 @@ The example below in an adaption of an example in the
 [LP Solve documentation.](http://lpsolve.sourceforge.net/5.5/formulate.htm)
 for maximizing a farmer's profit.
 
-```
+```go
 package main
 
 import "fmt"
