@@ -154,6 +154,13 @@ func (l *LP) ColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
 }
 
+// SetBounds sets the lower and upper bounds for the given column.
+// By default, columns have a lower bound of 0 and an upper bound of +infinity.
+// See http://lpsolve.sourceforge.net/5.5/set_bounds.htm
+func (l *LP) SetBounds(col int, lower, upper float64) {
+	C.set_bounds(l.ptr, C.int(col+1), C.double(lower), C.double(upper))
+}
+
 // SetUnbounded specifies that the given column has a lower bound of -infinity
 // and an upper bound of +infinity. (By default, columns have a lower bound of
 // 0 and an upper bound of +infinity.)
