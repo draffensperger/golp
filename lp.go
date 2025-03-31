@@ -137,9 +137,17 @@ func (level VerboseLevel) String() string {
 
 // SetVerboseLevel changes the output verbose level (golp defaults it to
 // IMPORTANT).
-// See http://lpsolve.sourceforge.net/5.1/set_verbose.htm
+// See http://lpsolve.sourceforge.net/5.5/set_verbose.htm
 func (l *LP) SetVerboseLevel(level VerboseLevel) {
 	C.set_verbose(l.ptr, C.int(level))
+}
+
+// SetTimeout sets the timeout in seconds for the solver.
+// The default timeout is 0, resulting in no timeout.
+// If a timout occurs, then solve will return SUBOPTIMAL or TIMEOUT.
+// See http://lpsolve.sourceforge.net/5.5/set_timeout.htm
+func (l *LP) SetTimeout(timeoutSecond int) {
+	C.set_timeout(l.ptr, C.long(timeoutSecond))
 }
 
 // SetColName changes a column name. Unlike the LPSolve C library, col is zero-based
