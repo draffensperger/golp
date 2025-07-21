@@ -162,6 +162,18 @@ func (l *LP) ColName(col int) string {
 	return C.GoString(C.get_col_name(l.ptr, C.int(col+1)))
 }
 
+// SetRowName changes a row name. Unlike the LPSolve C library, row is zero-based
+func (l *LP) SetRowName(row int, name string) {
+	cstrName := C.CString(name)
+	C.set_row_name(l.ptr, C.int(row+1), cstrName)
+	C.free(unsafe.Pointer(cstrName))
+}
+
+// RowName gives a row name, index is zero-based.
+func (l *LP) RowName(row int) string {
+	return C.GoString(C.get_row_name(l.ptr, C.int(row+1)))
+}
+
 // SetBounds sets the lower and upper bounds for the given column.
 // By default, columns have a lower bound of 0 and an upper bound of +infinity.
 // See http://lpsolve.sourceforge.net/5.5/set_bounds.htm
